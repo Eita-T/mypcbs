@@ -49,6 +49,27 @@ int warningFlg = 0;
 int displayCnt = 4;
 int displayOffCnt = 0;
 
+void setup() {
+  pinMode(SER, OUTPUT);
+  pinMode(CLK, OUTPUT);
+  pinMode(LATCH, OUTPUT);
+  pinMode(MODE, INPUT);
+
+  blinkInit();
+}
+
+void loop() {
+  int batteryVoltage = getVoltage();
+  for (int i = 0; i < 500; i++) {
+    if (attentionFlg == 1) {
+      batteryVoltage = getVoltage();
+    }
+    cellModeDetector();
+    displayVoltage(batteryVoltage);
+    checkVoltage(batteryVoltage);
+  }
+}
+
 void shiftOutData() {
   digitalWrite(LATCH, 0);
   shiftOut(SER, CLK, LSBFIRST, b1);
@@ -179,26 +200,5 @@ void cellModeDetector() {
       }
     }
     cellAmount = 2;
-  }
-}
-
-void setup() {
-  pinMode(SER, OUTPUT);
-  pinMode(CLK, OUTPUT);
-  pinMode(LATCH, OUTPUT);
-  pinMode(MODE, INPUT);
-
-  blinkInit();
-}
-
-void loop() {
-  int batteryVoltage = getVoltage();
-  for (int i = 0; i < 500; i++) {
-    if (attentionFlg == 1) {
-      batteryVoltage = getVoltage();
-    }
-    cellModeDetector();
-    displayVoltage(batteryVoltage);
-    checkVoltage(batteryVoltage);
   }
 }
